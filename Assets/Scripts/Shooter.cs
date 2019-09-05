@@ -45,7 +45,9 @@ public class Shooter : MonoBehaviour
                 try
                 {
                     equation.Parameters["x"].Value = frames * speed;
-                    projectileInstantPositive.transform.position = new Vector3(transform.position.x + frames * speed, transform.position.y, transform.position.z + (float)equation.Value);
+                    float output = (float)equation.Value;
+                    if (float.IsNaN(output) || float.IsInfinity(output)) Destroy(projectileInstantPositive);
+                    else projectileInstantPositive.transform.position = new Vector3(transform.position.x + frames * speed, transform.position.y, transform.position.z + output);
                 }
                 catch
                 {
@@ -59,7 +61,9 @@ public class Shooter : MonoBehaviour
                 try
                 {
                     equation.Parameters["x"].Value = -frames * speed;
-                    projectileInstantNegative.transform.position = new Vector3(transform.position.x - frames * speed, transform.position.y, transform.position.z + (float)equation.Value);
+                    float output = (float)equation.Value;
+                    if (float.IsNaN(output) || float.IsInfinity(output)) Destroy(projectileInstantNegative);
+                    else projectileInstantNegative.transform.position = new Vector3(transform.position.x - frames * speed, transform.position.y, transform.position.z + output);
                 }
                 catch
                 {
