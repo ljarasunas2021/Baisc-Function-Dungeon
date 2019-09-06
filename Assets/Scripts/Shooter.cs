@@ -50,7 +50,7 @@ public class Shooter : MonoBehaviour
         bool positiveWorking = true;
         for (int frames = 0; frames < visualizerMaxFrames && positiveWorking; frames++)
         {
-            equation.Parameters["x"].Value = frames * visualizerSpeed;
+            if (inputField.text.Contains("x")) equation.Parameters["x"].Value = frames * visualizerSpeed;
             float output = (float)equation.Value;
             if (float.IsNaN(output) || float.IsInfinity(output)) positiveWorking = false;
             else visualizeProjectileInstants.Add(Instantiate(visualizeProjectile, new Vector3(transform.position.x + frames * visualizerSpeed, transform.position.y, transform.position.z + output), Quaternion.identity));
@@ -59,7 +59,7 @@ public class Shooter : MonoBehaviour
         bool negativeWorking = true;
         for (int frames = 1; frames < visualizerMaxFrames && negativeWorking; frames++)
         {
-            equation.Parameters["x"].Value = -frames * visualizerSpeed;
+            if (inputField.text.Contains("x")) equation.Parameters["x"].Value = -frames * visualizerSpeed;
             float output = (float)equation.Value;
             if (float.IsNaN(output) || float.IsInfinity(output)) negativeWorking = false;
             else visualizeProjectileInstants.Add(Instantiate(visualizeProjectile, new Vector3(transform.position.x - frames * visualizerSpeed, transform.position.y, transform.position.z + output), Quaternion.identity));
@@ -96,7 +96,7 @@ public class Shooter : MonoBehaviour
             {
                 try
                 {
-                    equation.Parameters["x"].Value = frames * speed;
+                    if (inputField.text.Contains("x")) equation.Parameters["x"].Value = frames * speed;
                     float output = (float)equation.Value;
                     if (float.IsNaN(output) || float.IsInfinity(output)) Destroy(projectileInstantPositive);
                     else projectileInstantPositive.transform.position = new Vector3(transform.position.x + frames * speed, transform.position.y, transform.position.z + output);
@@ -112,7 +112,7 @@ public class Shooter : MonoBehaviour
             {
                 try
                 {
-                    equation.Parameters["x"].Value = -frames * speed;
+                    if (inputField.text.Contains("x")) equation.Parameters["x"].Value = -frames * speed;
                     float output = (float)equation.Value;
                     if (float.IsNaN(output) || float.IsInfinity(output)) Destroy(projectileInstantNegative);
                     else projectileInstantNegative.transform.position = new Vector3(transform.position.x - frames * speed, transform.position.y, transform.position.z + output);
