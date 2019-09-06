@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
- 
- 
+
+
 namespace B83.ExpressionParser
 {
     public interface IValue
@@ -66,7 +66,7 @@ namespace B83.ExpressionParser
         {
             return "( " + string.Join(" * ", m_Values.Select(v => v.ToString()).ToArray()) + " )";
         }
- 
+
     }
     public class OperationPower : IValue
     {
@@ -85,7 +85,7 @@ namespace B83.ExpressionParser
         {
             return "( " + m_Value + "^" + m_Power + " )";
         }
- 
+
     }
     public class OperationNegate : IValue
     {
@@ -102,7 +102,7 @@ namespace B83.ExpressionParser
         {
             return "( -" + m_Value + " )";
         }
- 
+
     }
     public class OperationReciprocal : IValue
     {
@@ -119,9 +119,9 @@ namespace B83.ExpressionParser
         {
             return "( 1/" + m_Value + " )";
         }
- 
+
     }
- 
+
     public class MultiParameterList : IValue
     {
         private IValue[] m_Values;
@@ -139,7 +139,7 @@ namespace B83.ExpressionParser
             return string.Join(", ", m_Values.Select(v => v.ToString()).ToArray());
         }
     }
- 
+
     public class CustomFunction : IValue
     {
         private IValue[] m_Params;
@@ -172,14 +172,14 @@ namespace B83.ExpressionParser
         public string Name { get; private set; }
         public override string ToString()
         {
-            return Name+"["+base.ToString()+"]";
+            return Name + "[" + base.ToString() + "]";
         }
         public Parameter(string aName) : base(0)
         {
             Name = aName;
         }
     }
- 
+
     public class Expression : IValue
     {
         public Dictionary<string, Parameter> Parameters = new Dictionary<string, Parameter>();
@@ -190,7 +190,8 @@ namespace B83.ExpressionParser
         }
         public double[] MultiValue
         {
-            get {
+            get
+            {
                 var t = ExpressionTree as MultiParameterList;
                 if (t != null)
                 {
@@ -209,7 +210,7 @@ namespace B83.ExpressionParser
         public ExpressionDelegate ToDelegate(params string[] aParamOrder)
         {
             var parameters = new List<Parameter>(aParamOrder.Length);
-            for(int i = 0; i < aParamOrder.Length; i++)
+            for (int i = 0; i < aParamOrder.Length; i++)
             {
                 if (Parameters.ContainsKey(aParamOrder[i]))
                     parameters.Add(Parameters[aParamOrder[i]]);
@@ -217,7 +218,7 @@ namespace B83.ExpressionParser
                     parameters.Add(null);
             }
             var parameters2 = parameters.ToArray();
- 
+
             return (p) => Invoke(p, parameters2);
         }
         public MultiResultDelegate ToMultiResultDelegate(params string[] aParamOrder)
@@ -231,14 +232,14 @@ namespace B83.ExpressionParser
                     parameters.Add(null);
             }
             var parameters2 = parameters.ToArray();
- 
- 
+
+
             return (p) => InvokeMultiResult(p, parameters2);
         }
         double Invoke(double[] aParams, Parameter[] aParamList)
         {
             int count = System.Math.Min(aParamList.Length, aParams.Length);
-            for (int i = 0; i < count; i++ )
+            for (int i = 0; i < count; i++)
             {
                 if (aParamList[i] != null)
                     aParamList[i].Value = aParams[i];
@@ -259,21 +260,21 @@ namespace B83.ExpressionParser
         {
             return new ExpressionParser().EvaluateExpression(aExpression);
         }
- 
+
         public class ParameterException : System.Exception { public ParameterException(string aMessage) : base(aMessage) { } }
     }
     public delegate double ExpressionDelegate(params double[] aParams);
     public delegate double[] MultiResultDelegate(params double[] aParams);
- 
- 
- 
+
+
+
     public class ExpressionParser
     {
         private List<string> m_BracketHeap = new List<string>();
         private Dictionary<string, System.Func<double>> m_Consts = new Dictionary<string, System.Func<double>>();
         private Dictionary<string, System.Func<double[], double>> m_Funcs = new Dictionary<string, System.Func<double[], double>>();
         private Expression m_Context;
- 
+
         public ExpressionParser()
         {
             var rnd = new System.Random();
@@ -285,15 +286,15 @@ namespace B83.ExpressionParser
             m_Funcs.Add("floor", (p) => System.Math.Floor(p.FirstOrDefault()));
             m_Funcs.Add("ceiling", (p) => System.Math.Ceiling(p.FirstOrDefault()));
             m_Funcs.Add("round", (p) => System.Math.Round(p.FirstOrDefault()));
- 
+
             m_Funcs.Add("sin", (p) => System.Math.Sin(p.FirstOrDefault()));
             m_Funcs.Add("cos", (p) => System.Math.Cos(p.FirstOrDefault()));
             m_Funcs.Add("tan", (p) => System.Math.Tan(p.FirstOrDefault()));
- 
+
             m_Funcs.Add("asin", (p) => System.Math.Asin(p.FirstOrDefault()));
             m_Funcs.Add("acos", (p) => System.Math.Acos(p.FirstOrDefault()));
             m_Funcs.Add("atan", (p) => System.Math.Atan(p.FirstOrDefault()));
-            m_Funcs.Add("atan2", (p) => System.Math.Atan2(p.FirstOrDefault(),p.ElementAtOrDefault(1)));
+            m_Funcs.Add("atan2", (p) => System.Math.Atan2(p.FirstOrDefault(), p.ElementAtOrDefault(1)));
             //System.Math.Floor
             m_Funcs.Add("min", (p) => System.Math.Min(p.FirstOrDefault(), p.ElementAtOrDefault(1)));
             m_Funcs.Add("max", (p) => System.Math.Max(p.FirstOrDefault(), p.ElementAtOrDefault(1)));
@@ -306,15 +307,15 @@ namespace B83.ExpressionParser
                 return rnd.NextDouble();
             });
         }
- 
-        public void AddFunc(string aName, System.Func<double[],double> aMethod)
+
+        public void AddFunc(string aName, System.Func<double[], double> aMethod)
         {
             if (m_Funcs.ContainsKey(aName))
                 m_Funcs[aName] = aMethod;
             else
                 m_Funcs.Add(aName, aMethod);
         }
- 
+
         public void AddConst(string aName, System.Func<double> aMethod)
         {
             if (m_Consts.ContainsKey(aName))
@@ -332,7 +333,7 @@ namespace B83.ExpressionParser
             if (m_Consts.ContainsKey(aName))
                 m_Consts.Remove(aName);
         }
- 
+
         int FindClosingBracket(ref string aText, int aStart, char aOpen, char aClose)
         {
             int counter = 0;
@@ -347,7 +348,7 @@ namespace B83.ExpressionParser
             }
             return -1;
         }
- 
+
         void SubstitudeBracket(ref string aExpression, int aIndex)
         {
             int closing = FindClosingBracket(ref aExpression, aIndex, '(', ')');
@@ -360,7 +361,7 @@ namespace B83.ExpressionParser
             }
             else throw new ParseException("Bracket not closed!");
         }
- 
+
         IValue Parse(string aExpression)
         {
             aExpression = aExpression.Trim();
@@ -469,7 +470,7 @@ namespace B83.ExpressionParser
             {
                 if (aExpression == C.Key)
                 {
-                    return new CustomFunction(C.Key,(p)=>C.Value(),null);
+                    return new CustomFunction(C.Key, (p) => C.Value(), null);
                 }
             }
             int index2a = aExpression.IndexOf('&');
@@ -498,10 +499,10 @@ namespace B83.ExpressionParser
                 m_Context.Parameters.Add(aExpression, val);
                 return val;
             }
- 
+
             throw new ParseException("Reached unexpected end within the parsing tree");
         }
- 
+
         private bool ValidIdentifier(string aExpression)
         {
             aExpression = aExpression.Trim();
@@ -519,7 +520,7 @@ namespace B83.ExpressionParser
                 return false;
             return true;
         }
- 
+
         public Expression EvaluateExpression(string aExpression)
         {
             var val = new Expression();
@@ -529,7 +530,7 @@ namespace B83.ExpressionParser
             m_BracketHeap.Clear();
             return val;
         }
- 
+
         public double Evaluate(string aExpression)
         {
             return EvaluateExpression(aExpression).Value;
@@ -538,7 +539,7 @@ namespace B83.ExpressionParser
         {
             return new ExpressionParser().Evaluate(aExpression);
         }
- 
+
         public class ParseException : System.Exception { public ParseException(string aMessage) : base(aMessage) { } }
     }
 }
