@@ -790,8 +790,11 @@ MonoBehaviour:
   inputField: {fileID: 1239355105}
   projectile: {fileID: 7908178708057215329, guid: 70ee7ea3992df4e19ba9c4a573f7123f,
     type: 3}
-  maxFrames: 1000
+  visualizeProjectile: {fileID: 2273191287615843222, guid: 9383ff0edb30547e2b6f6ad858f619ee,
+    type: 3}
   speed: 0.1
+  visualizerSpeed: 0.5
+  visualizerMaxFrames: 10
   uIController: {fileID: 1258074174}
 --- !u!1 &533917815
 GameObject:
