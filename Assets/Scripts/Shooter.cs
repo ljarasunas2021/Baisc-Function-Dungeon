@@ -1,23 +1,21 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using B83.ExpressionParser;
-using UnityEngine.UI;
 using TMPro;
 
 public class Shooter : MonoBehaviour
 {
     public TMP_InputField inputField;
-    public TMP_Text win;
-    public TMP_Text lose;
-    public TMP_Text errorInInput;
-    public Button retry;
-    public Canvas canvas;
     public GameObject projectile;
     public int maxFrames;
     public float speed;
+    public GameObject uIController;
+    private UIController uIControllerScript;
 
-    private TMP_Text errorInInputInstant;
+    private void Start()
+    {
+        uIControllerScript = uIController.GetComponent<UIController>();
+    }
 
     public void Shoot()
     {
@@ -27,7 +25,7 @@ public class Shooter : MonoBehaviour
             Expression equation = parser.EvaluateExpression(inputField.text);
             GameObject projectileInstantPositive = Instantiate(projectile, transform.position, Quaternion.identity);
             GameObject projectileInstantNegative = Instantiate(projectile, transform.position, Quaternion.identity);
-            if (errorInInputInstant != null) Destroy(errorInInputInstant);
+            uIControllerScript.DestroyErrorInInputInstant();
             StartCoroutine(MoveProjectile(projectileInstantPositive, projectileInstantNegative, equation));
         }
         catch
@@ -75,15 +73,12 @@ public class Shooter : MonoBehaviour
             yield return 0;
         }
 
-        if (GameObject.FindGameObjectsWithTag("Target").Length == 0) Instantiate(win, canvas.transform);
-        else Instantiate(lose, canvas.transform);
-        Instantiate(retry, canvas.transform);
+        uIControllerScript.InstantiateWinLose(GameObject.FindGameObjectsWithTag("Target").Length == 0);
     }
 
     private void CreateErrorMessage(GameObject projectileInstantPositive, GameObject projectileInstantNegative)
     {
-        errorInInputInstant = Instantiate(errorInInput, canvas.transform);
-        Destroy(errorInInputInstant, 5f);
+        uIControllerScript.InstantiateErrorInInput();
         if (projectileInstantPositive != null) Destroy(projectileInstantPositive);
         if (projectileInstantNegative != null) Destroy(projectileInstantNegative);
     }
