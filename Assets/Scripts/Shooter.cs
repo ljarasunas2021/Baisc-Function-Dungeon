@@ -13,6 +13,7 @@ public class Shooter : MonoBehaviour
     public float visualizerSpeed;
     public int visualizerMaxFrames;
     public GameObject uIController;
+    public float playerHeight;
 
     private UIController uIControllerScript;
     private bool visualizeOn = true;
@@ -50,7 +51,7 @@ public class Shooter : MonoBehaviour
         {
             float output = (float)functionControlScript.output(frames * visualizerSpeed);
             if (float.IsNaN(output) || float.IsInfinity(output)) positiveWorking = false;
-            else visualizeProjectileInstants.Add(Instantiate(visualizeProjectile, new Vector3(transform.position.x + frames * visualizerSpeed, transform.position.y, transform.position.z + output), Quaternion.identity));
+            else visualizeProjectileInstants.Add(Instantiate(visualizeProjectile, new Vector3(transform.position.x + frames * visualizerSpeed, transform.position.y + playerHeight, transform.position.z + output), Quaternion.identity));
         }
 
         // visualize the negative projectile (the one that travels left)
@@ -59,7 +60,7 @@ public class Shooter : MonoBehaviour
         {
             float output = (float)functionControlScript.output(-frames * visualizerSpeed);
             if (float.IsNaN(output) || float.IsInfinity(output)) negativeWorking = false;
-            else visualizeProjectileInstants.Add(Instantiate(visualizeProjectile, new Vector3(transform.position.x - frames * visualizerSpeed, transform.position.y, transform.position.z + output), Quaternion.identity));
+            else visualizeProjectileInstants.Add(Instantiate(visualizeProjectile, new Vector3(transform.position.x - frames * visualizerSpeed, transform.position.y + playerHeight, transform.position.z + output), Quaternion.identity));
         }
     }
 
@@ -73,8 +74,8 @@ public class Shooter : MonoBehaviour
         DeleteVisualizeInstants();
 
         // instantiate a positive and negative projectile
-        GameObject projectileInstantPositive = Instantiate(projectile, transform.position, Quaternion.identity);
-        GameObject projectileInstantNegative = Instantiate(projectile, transform.position, Quaternion.identity);
+        GameObject projectileInstantPositive = Instantiate(projectile, transform.position + new Vector3(0, playerHeight, 0), Quaternion.identity);
+        GameObject projectileInstantNegative = Instantiate(projectile, transform.position + new Vector3(0, playerHeight, 0), Quaternion.identity);
 
         // destroy any lingering UI
         uIControllerScript.DestroyAllUI();
@@ -91,7 +92,7 @@ public class Shooter : MonoBehaviour
                 {
                     float output = (float)functionControlScript.output(frames * speed);
                     if (float.IsNaN(output) || float.IsInfinity(output)) Destroy(projectileInstantPositive);
-                    else projectileInstantPositive.transform.position = new Vector3(transform.position.x + frames * speed, transform.position.y, transform.position.z + output);
+                    else projectileInstantPositive.transform.position = new Vector3(transform.position.x + frames * speed, transform.position.y + playerHeight, transform.position.z + output);
                 }
                 catch
                 {
@@ -106,7 +107,7 @@ public class Shooter : MonoBehaviour
                 {
                     float output = (float)functionControlScript.output(-frames * speed);
                     if (float.IsNaN(output) || float.IsInfinity(output)) Destroy(projectileInstantNegative);
-                    else projectileInstantNegative.transform.position = new Vector3(transform.position.x - frames * speed, transform.position.y, transform.position.z + output);
+                    else projectileInstantNegative.transform.position = new Vector3(transform.position.x - frames * speed, transform.position.y + playerHeight, transform.position.z + output);
                 }
                 catch
                 {
