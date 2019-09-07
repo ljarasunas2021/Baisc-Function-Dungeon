@@ -76,15 +76,20 @@ public class Shooter : MonoBehaviour
         visualizeOn = false;
         DeleteVisualizeInstants();
 
+        // set correct function
+        functionControlScript.SetFunction(inputField.text);
+        GameObject projectileInstantPositive = null, projectileInstantNegative = null;
+
         // instantiate a positive and negative projectile
-        GameObject projectileInstantPositive = Instantiate(projectile, transform.position + new Vector3(0, playerHeight, 0), Quaternion.identity);
-        GameObject projectileInstantNegative = Instantiate(projectile, transform.position + new Vector3(0, playerHeight, 0), Quaternion.identity);
+        try
+        {
+            projectileInstantPositive = Instantiate(projectile, transform.position + new Vector3(0, playerHeight, (float)functionControlScript.output(0)), Quaternion.identity);
+            projectileInstantNegative = Instantiate(projectile, transform.position + new Vector3(0, playerHeight, (float)functionControlScript.output(0)), Quaternion.identity);
+        }
+        catch { }
 
         // destroy any lingering UI
         uIControllerScript.DestroyAllUI();
-
-        // set correct function
-        functionControlScript.SetFunction(inputField.text);
 
         // move positive and negative projectile along curve with error resulting in Error in Input message
         for (int frames = 0; projectileInstantPositive != null || projectileInstantNegative != null; frames++)
@@ -95,7 +100,7 @@ public class Shooter : MonoBehaviour
                 {
                     float output = (float)functionControlScript.output(frames * speed);
                     if (float.IsNaN(output) || float.IsInfinity(output)) Destroy(projectileInstantPositive);
-                    else projectileInstantPositive.transform.position = new Vector3(transform.position.x + frames * speed, transform.position.y + playerHeight, transform.position.z + output);
+                    else projectileInstantPositive.GetComponent<Rigidbody>().MovePosition(new Vector3(transform.position.x + frames * speed, transform.position.y + playerHeight, transform.position.z + output));
                 }
                 catch
                 {
@@ -110,7 +115,7 @@ public class Shooter : MonoBehaviour
                 {
                     float output = (float)functionControlScript.output(-frames * speed);
                     if (float.IsNaN(output) || float.IsInfinity(output)) Destroy(projectileInstantNegative);
-                    else projectileInstantNegative.transform.position = new Vector3(transform.position.x - frames * speed, transform.position.y + playerHeight, transform.position.z + output);
+                    else projectileInstantNegative.GetComponent<Rigidbody>().MovePosition(new Vector3(transform.position.x - frames * speed, transform.position.y + playerHeight, transform.position.z + output));
                 }
                 catch
                 {
