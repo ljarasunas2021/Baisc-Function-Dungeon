@@ -20,7 +20,11 @@ public class Projectile : MonoBehaviour
     // destroy any targets and self destruct if hits boundary
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Boundary") Destroy(gameObject);
+        if (collision.gameObject.tag == "Boundary")
+        {
+            Debug.Log("Collision" + collision.gameObject.name);
+            Destroy(gameObject);
+        }
     }
 
     public Vector2 ReturnVelocity()
