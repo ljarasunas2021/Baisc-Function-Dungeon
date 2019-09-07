@@ -13,6 +13,7 @@ public class UIController : MonoBehaviour
     // Instantiate corresponding win / lose UI
     public void InstantiateWinLose(bool winGame)
     {
+        DestroyAllUI();
         if (winGame) winInstant = Instantiate(win, canvas.transform);
         else loseInstant = Instantiate(lose, canvas.transform);
         retryInstant = Instantiate(retry, canvas.transform);

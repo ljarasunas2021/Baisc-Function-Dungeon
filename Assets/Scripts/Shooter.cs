@@ -79,6 +79,9 @@ public class Shooter : MonoBehaviour
         // destroy any lingering UI
         uIControllerScript.DestroyAllUI();
 
+        // set correct function
+        functionControlScript.SetFunction(inputField.text);
+
         // move positive and negative projectile along curve with error resulting in Error in Input message
         for (int frames = 0; projectileInstantPositive != null || projectileInstantNegative != null; frames++)
         {
