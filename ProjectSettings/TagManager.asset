@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Target
   - Boundary
+  - Projectile
+  - Controller
   layers:
   - Default
   - TransparentFX

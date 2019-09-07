@@ -12,19 +12,22 @@ public class Shooter : MonoBehaviour
     public float speed;
     public float visualizerSpeed;
     public int visualizerMaxFrames;
-    public GameObject uIController;
     public float playerHeight;
 
     private UIController uIControllerScript;
+    private TargetController targetControllerScript;
     private bool visualizeOn = true;
     private string lastEquation;
     private List<GameObject> visualizeProjectileInstants = new List<GameObject>();
     private FunctionControl functionControlScript;
+    private ControllerController controller;
 
     // get necessary components for future reference
     private void Start()
     {
-        uIControllerScript = uIController.GetComponent<UIController>();
+        controller = GameObject.FindGameObjectWithTag("Controller").GetComponent<ControllerController>();
+        uIControllerScript = controller.uIController;
+        targetControllerScript = controller.targetController;
         functionControlScript = GetComponent<FunctionControl>();
     }
 
@@ -120,7 +123,7 @@ public class Shooter : MonoBehaviour
         }
 
         // create win / lose UI
-        uIControllerScript.InstantiateWinLose(GameObject.FindGameObjectsWithTag("Target").Length == 0);
+        uIControllerScript.InstantiateWinLose(!(targetControllerScript.ReturnTargets() > 0));
     }
 
     // create an error in input message and destroy any projectiles
