@@ -6,13 +6,23 @@ using UnityEngine;
 public class FunctionControl : MonoBehaviour
 {
     private string function;
+    private Dictionary<double, double> inputDict = new Dictionary<double, double>();
 
     // get output if you replace "x" with your input
     public double output(double a)
     {
-        string functionDupe = function.Replace("x", Convert.ToString(a));
-        functionDupe = functionDupe.Replace("X", Convert.ToString(a));
-        return eval(functionDupe);
+        if (inputDict.ContainsKey(a))
+        {
+            return inputDict[a];
+        }
+        else
+        {
+            string functionDupe = function.Replace("x", Convert.ToString(a));
+            functionDupe = functionDupe.Replace("X", Convert.ToString(a));
+            double output = eval(functionDupe);
+            inputDict.Add(a, output);
+            return output;
+        }
     }
 
     // evaluate expression
@@ -105,5 +115,6 @@ public class FunctionControl : MonoBehaviour
     public void SetFunction(string function1)
     {
         function = postFix(function1);
+        inputDict.Clear();
     }
 }

@@ -3321,7 +3321,7 @@ MonoBehaviour:
     type: 3}
   visualizeProjectile: {fileID: 2273191287615843222, guid: 9383ff0edb30547e2b6f6ad858f619ee,
     type: 3}
-  speed: 0.1
+  speed: 0.2
   visualizerSpeed: 0.25
   visualizerMaxFrames: 10
   playerHeight: 0.75

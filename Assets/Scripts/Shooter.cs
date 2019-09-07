@@ -29,6 +29,12 @@ public class Shooter : MonoBehaviour
         uIControllerScript = controller.uIController;
         targetControllerScript = controller.targetController;
         functionControlScript = GetComponent<FunctionControl>();
+        for (int i = 0; i < 2 * visualizerMaxFrames - 1; i++)
+        {
+            GameObject visualizeProjectile1 = Instantiate(visualizeProjectile, transform);
+            visualizeProjectile1.SetActive(false);
+            visualizeProjectileInstants.Add(visualizeProjectile1);
+        }
     }
 
     // if the text has changed, try to visualize.  If you can visualize visualize else don't visualize
@@ -37,33 +43,64 @@ public class Shooter : MonoBehaviour
         if (visualizeOn)
         {
             try { if (inputField.text != lastEquation) Visualize(); }
-            catch { DeleteVisualizeInstants(); }
+            catch { HideVisualizeInstants(); }
         }
     }
 
     private void Visualize()
     {
         // delete previous visualize projectiles, set last equation, set the appropriate function
-        DeleteVisualizeInstants();
         lastEquation = inputField.text;
         functionControlScript.SetFunction(inputField.text);
 
+        int visualizeProjectileIndex = 0;
+
         // visualize the positive projectile (the one that travels right)
         bool positiveWorking = true;
-        for (int frames = 0; frames < visualizerMaxFrames && positiveWorking; frames++)
+        for (int frames = 0; frames < visualizerMaxFrames; frames++)
         {
-            float output = (float)functionControlScript.output(frames * visualizerSpeed);
-            if (float.IsNaN(output) || float.IsInfinity(output)) positiveWorking = false;
-            else visualizeProjectileInstants.Add(Instantiate(visualizeProjectile, new Vector3(transform.position.x + frames * visualizerSpeed, transform.position.y + playerHeight, transform.position.z + output), Quaternion.identity));
+            GameObject currentVisualizeProjectile = visualizeProjectileInstants[visualizeProjectileIndex];
+
+            if (positiveWorking)
+            {
+                float output = (float)functionControlScript.output(frames * visualizerSpeed);
+                if (float.IsNaN(output) || float.IsInfinity(output)) positiveWorking = false;
+                else
+                {
+                    currentVisualizeProjectile.SetActive(true);
+                    currentVisualizeProjectile.transform.position = new Vector3(transform.position.x + frames * visualizerSpeed, transform.position.y + playerHeight, transform.position.z + output);
+                }
+            }
+
+            if (!positiveWorking) currentVisualizeProjectile.SetActive(false);
+
+            visualizeProjectileIndex++;
         }
 
         // visualize the negative projectile (the one that travels left)
         bool negativeWorking = true;
-        for (int frames = 1; frames < visualizerMaxFrames && negativeWorking; frames++)
+        float zeroOutput = (float)functionControlScript.output(0);
+        if (!float.IsNaN(zeroOutput) && !float.IsInfinity(zeroOutput))
         {
-            float output = (float)functionControlScript.output(-frames * visualizerSpeed);
-            if (float.IsNaN(output) || float.IsInfinity(output)) negativeWorking = false;
-            else visualizeProjectileInstants.Add(Instantiate(visualizeProjectile, new Vector3(transform.position.x - frames * visualizerSpeed, transform.position.y + playerHeight, transform.position.z + output), Quaternion.identity));
+            for (int frames = 1; frames < visualizerMaxFrames; frames++)
+            {
+                GameObject currentVisualizeProjectile = visualizeProjectileInstants[visualizeProjectileIndex];
+
+                if (negativeWorking)
+                {
+                    float output = (float)functionControlScript.output(-frames * visualizerSpeed);
+                    if (float.IsNaN(output) || float.IsInfinity(output)) negativeWorking = false;
+                    else
+                    {
+                        currentVisualizeProjectile.SetActive(true);
+                        currentVisualizeProjectile.transform.position = new Vector3(transform.position.x - frames * visualizerSpeed, transform.position.y + playerHeight, transform.position.z + output);
+                    }
+                }
+
+                if (!negativeWorking) currentVisualizeProjectile.SetActive(false);
+
+                visualizeProjectileIndex++;
+            }
         }
     }
 
@@ -74,7 +111,7 @@ public class Shooter : MonoBehaviour
     {
         // turn off visualization and delete visualize projectiles
         visualizeOn = false;
-        DeleteVisualizeInstants();
+        HideVisualizeInstants();
 
         // set correct function
         functionControlScript.SetFunction(inputField.text);
@@ -83,8 +120,10 @@ public class Shooter : MonoBehaviour
         // instantiate a positive and negative projectile
         try
         {
-            projectileInstantPositive = Instantiate(projectile, transform.position + new Vector3(0, playerHeight, (float)functionControlScript.output(0)), Quaternion.identity);
-            projectileInstantNegative = Instantiate(projectile, transform.position + new Vector3(0, playerHeight, (float)functionControlScript.output(0)), Quaternion.identity);
+            float output = (float)functionControlScript.output(0);
+            output = Mathf.Clamp(output, -1000, 1000);
+            projectileInstantPositive = Instantiate(projectile, transform.position + new Vector3(0, playerHeight, output), Quaternion.identity);
+            projectileInstantNegative = Instantiate(projectile, transform.position + new Vector3(0, playerHeight, output), Quaternion.identity);
         }
         catch { }
 
@@ -140,5 +179,5 @@ public class Shooter : MonoBehaviour
     }
 
     // Delete visualize instants
-    private void DeleteVisualizeInstants() { foreach (GameObject projectileInstant in visualizeProjectileInstants) Destroy(projectileInstant); }
+    private void HideVisualizeInstants() { foreach (GameObject projectileInstant in visualizeProjectileInstants) projectileInstant.SetActive(false); }
 }
