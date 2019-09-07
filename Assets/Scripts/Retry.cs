@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Retry : MonoBehaviour
 {
+    // reload current scene
     public void ReloadScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);

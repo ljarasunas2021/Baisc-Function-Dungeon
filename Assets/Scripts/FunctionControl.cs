@@ -5,21 +5,19 @@ using UnityEngine;
 
 public class FunctionControl : MonoBehaviour
 {
+    private string function;
 
-    public string function;
-
-    public void Reset()
-    {
-        function = postFix(function);
-    }
+    // get output if you replace "x" with your input
     public double output(double a)
     {
         string functionDupe = function.Replace("x", Convert.ToString(a));
+        functionDupe = functionDupe.Replace("X", Convert.ToString(a));
         return eval(functionDupe);
     }
+
+    // evaluate expression
     private double eval(string input)
     {
-
         string[] array = input.Split(' ');
         Stack<double> eval = new Stack<double>();
 
@@ -62,6 +60,8 @@ public class FunctionControl : MonoBehaviour
         }
         return eval.Pop();
     }
+
+    // convert an infix equation to a post fix equation
     private string postFix(string str)
     {
         string a = str; //copy of input
@@ -101,6 +101,7 @@ public class FunctionControl : MonoBehaviour
         return output;
     }
 
+    // set the current function
     public void SetFunction(string function1)
     {
         function = postFix(function1);
