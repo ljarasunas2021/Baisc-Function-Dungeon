@@ -547,7 +547,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 129546966}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -769,6 +769,7 @@ GameObject:
   - component: {fileID: 514041184}
   - component: {fileID: 514041183}
   - component: {fileID: 514041182}
+  - component: {fileID: 514041187}
   - component: {fileID: 514041186}
   m_Layer: 0
   m_Name: Player
@@ -861,6 +862,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95e542efe9ff5407cbc30ed2c2e4fa2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  functionControlScript: {fileID: 514041187}
   inputField: {fileID: 1239355105}
   projectile: {fileID: 7908178708057215329, guid: 70ee7ea3992df4e19ba9c4a573f7123f,
     type: 3}
@@ -870,6 +872,20 @@ MonoBehaviour:
   visualizerSpeed: 0.25
   visualizerMaxFrames: 10
   uIController: {fileID: 1258074174}
+--- !u!114 &514041187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 514041181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76fbe5adb720e44d38a3776b203e04ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  function: 
+  sensitivity: 1
 --- !u!1 &533917815
 GameObject:
   m_ObjectHideFlags: 0
@@ -911,7 +927,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 533917815}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -1084,7 +1100,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 559735671}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -2006,7 +2022,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1402640491}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5

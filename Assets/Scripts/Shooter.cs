@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
-using B83.ExpressionParser;
 using TMPro;
 
 public class Shooter : MonoBehaviour
 {
+    public FunctionControl functionControlScript;
     public TMP_InputField inputField;
     public GameObject projectile;
     public GameObject visualizeProjectile;
@@ -31,9 +31,7 @@ public class Shooter : MonoBehaviour
             {
                 if (inputField.text != lastEquation)
                 {
-                    var parser = new ExpressionParser();
-                    Expression equation = parser.EvaluateExpression(inputField.text);
-                    Visualize(equation);
+                    Visualize();
                 }
             }
             catch
@@ -43,15 +41,17 @@ public class Shooter : MonoBehaviour
         }
     }
 
-    private void Visualize(Expression equation)
+    private void Visualize()
     {
         DeleteVisualizeInstants();
+        lastEquation = inputField.text;
+        functionControlScript.SetFunction(inputField.text);
 
         bool positiveWorking = true;
         for (int frames = 0; frames < visualizerMaxFrames && positiveWorking; frames++)
         {
-            if (inputField.text.Contains("x")) equation.Parameters["x"].Value = frames * visualizerSpeed;
-            float output = (float)equation.Value;
+            //if (inputField.text.Contains("x")) equation.Parameters["x"].Value = frames * visualizerSpeed;
+            float output = (float)functionControlScript.output(frames * visualizerSpeed);
             if (float.IsNaN(output) || float.IsInfinity(output)) positiveWorking = false;
             else visualizeProjectileInstants.Add(Instantiate(visualizeProjectile, new Vector3(transform.position.x + frames * visualizerSpeed, transform.position.y, transform.position.z + output), Quaternion.identity));
         }
@@ -59,13 +59,11 @@ public class Shooter : MonoBehaviour
         bool negativeWorking = true;
         for (int frames = 1; frames < visualizerMaxFrames && negativeWorking; frames++)
         {
-            if (inputField.text.Contains("x")) equation.Parameters["x"].Value = -frames * visualizerSpeed;
-            float output = (float)equation.Value;
+            //if (inputField.text.Contains("x")) equation.Parameters["x"].Value = -frames * visualizerSpeed;
+            float output = (float)functionControlScript.output(-frames * visualizerSpeed);
             if (float.IsNaN(output) || float.IsInfinity(output)) negativeWorking = false;
             else visualizeProjectileInstants.Add(Instantiate(visualizeProjectile, new Vector3(transform.position.x - frames * visualizerSpeed, transform.position.y, transform.position.z + output), Quaternion.identity));
         }
-
-        lastEquation = inputField.text;
     }
 
     public void Shoot()
@@ -96,8 +94,7 @@ public class Shooter : MonoBehaviour
             {
                 try
                 {
-                    if (inputField.text.Contains("x")) equation.Parameters["x"].Value = frames * speed;
-                    float output = (float)equation.Value;
+                    float output = (float)functionControlScript.output(frames * speed);
                     if (float.IsNaN(output) || float.IsInfinity(output)) Destroy(projectileInstantPositive);
                     else projectileInstantPositive.transform.position = new Vector3(transform.position.x + frames * speed, transform.position.y, transform.position.z + output);
                 }
@@ -112,8 +109,7 @@ public class Shooter : MonoBehaviour
             {
                 try
                 {
-                    if (inputField.text.Contains("x")) equation.Parameters["x"].Value = -frames * speed;
-                    float output = (float)equation.Value;
+                    float output = (float)functionControlScript.output(-frames * speed);
                     if (float.IsNaN(output) || float.IsInfinity(output)) Destroy(projectileInstantNegative);
                     else projectileInstantNegative.transform.position = new Vector3(transform.position.x - frames * speed, transform.position.y, transform.position.z + output);
                 }
